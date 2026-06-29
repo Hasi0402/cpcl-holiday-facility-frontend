@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPCL – Holiday Facility</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C8860A;--gold-light:#F5E6C8;--gold-dark:#8A5C00;--navy:#1A2744;--navy-mid:#243460;--navy-light:#EEF1F8;--bg:#F7F6F2;--surface:#FFFFFF;--border:#E0DDD5;--text:#1C1C1C;--muted:#666;--hint:#999;--success:#1A6B3C;--success-bg:#E8F5EE;--danger:#A32D2D;--danger-bg:#FCEBEB;--warn:#7A4F00;--warn-bg:#FFF3DC;--radius:10px;--radius-lg:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+.hidden{display:none!important}
+.topbar{background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:36px;height:36px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:14px;color:#fff;font-weight:700}
+.topbar-title{font-size:15px;font-weight:600;letter-spacing:.3px}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.topbar-user{font-size:13px;opacity:.8}
+.topbar-badge{background:var(--gold);color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+.topbar-nav{display:flex;gap:4px}
+.topbar-nav a{color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;padding:6px 12px;border-radius:6px;cursor:pointer;transition:.15s}
+.topbar-nav a:hover,.topbar-nav a.active{background:rgba(255,255,255,.12);color:#fff}
+.btn-signout{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-signout:hover{background:rgba(255,255,255,.1);color:#fff}
+.page{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+.page-header{margin-bottom:2rem}
+.page-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px}
+.page-sub{font-size:14px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-row.full{grid-template-columns:1fr}
+.form-row.three{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field label span.req{color:var(--gold)}
+.field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);transition:.15s;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,134,10,.1)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field .hint{font-size:12px;color:var(--hint)}
+.btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:10px 20px;border-radius:var(--radius);cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--gold);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--gold-dark)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-secondary:hover:not(:disabled){border-color:#999;background:var(--bg)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover:not(:disabled){background:#7A1F1F}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover:not(:disabled){background:var(--navy-mid)}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-group{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.3px}
+.badge-pending{background:#FFF3DC;color:#7A4F00}
+.badge-approved{background:var(--success-bg);color:var(--success)}
+.badge-rejected{background:var(--danger-bg);color:var(--danger)}
+.badge-cancelled{background:#F0F0F0;color:#555}
+.alert{border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem;font-size:14px;line-height:1.6}
+.alert-warn{background:var(--warn-bg);border-left:3px solid var(--gold);color:var(--warn)}
+.alert-info{background:var(--navy-light);border-left:3px solid var(--navy-mid);color:var(--navy)}
+.alert-success{background:var(--success-bg);border-left:3px solid var(--success);color:var(--success)}
+.alert-danger{background:var(--danger-bg);border-left:3px solid var(--danger);color:var(--danger)}
+.alert strong{font-weight:600}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead tr{background:var(--bg)}
+th{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+.radio-group{display:flex;gap:.5rem;flex-wrap:wrap}
+.radio-night{display:none}
+.radio-night+label{display:inline-flex;align-items:center;padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;transition:.15s;gap:6px}
+.radio-night:checked+label{border-color:var(--gold);background:var(--gold-light);color:var(--gold-dark);font-weight:500}
+.hotel-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.25rem}
+.hotel-header{background:var(--navy);color:#fff;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:flex-start}
+.hotel-name{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:2px}
+.hotel-addr{font-size:12px;opacity:.7}
+.hotel-contacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem}
+.hotel-contact-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:6px;color:#fff;text-decoration:none;cursor:pointer}
+.hotel-body{padding:1.25rem 1.5rem}
+.hotel-distances{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+.hotel-dist-box{background:var(--bg);border-radius:var(--radius);padding:.75rem;font-size:13px}
+.hotel-dist-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.hotel-dist-item{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border)}
+.hotel-dist-item:last-child{border-bottom:none}
+.hotel-dist-km{font-weight:500;color:var(--navy)}
+.pkg-section{margin-bottom:.75rem}
+.pkg-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gold-dark);margin-bottom:.4rem}
+.pkg-list{list-style:none;font-size:13px;color:var(--text)}
+.pkg-list li{padding:2px 0;padding-left:14px;position:relative}
+.pkg-list li::before{content:"•";position:absolute;left:0;color:var(--gold)}
+.nodal-row{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:var(--radius);padding:.75rem 1rem;margin-top:.75rem;font-size:13px}
+.nodal-avatar{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy)}
+.login-card{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-brand{text-align:center;margin-bottom:2rem}
+.login-logo{width:60px;height:60px;background:var(--gold);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:22px;color:#fff;margin:0 auto 12px}
+.login-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--muted)}
+.login-error{background:var(--danger-bg);border-radius:var(--radius);padding:.75rem 1rem;font-size:13px;color:var(--danger);margin-bottom:1rem}
+.print-slip{border:2px solid var(--navy);border-radius:var(--radius-lg);padding:2rem;font-size:14px;line-height:1.7}
+.print-header{text-align:center;border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.5rem}
+.print-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted var(--border)}
+.print-row:last-child{border-bottom:none}
+.print-label{color:var(--muted);font-size:13px}
+.print-val{font-weight:500}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;color:var(--navy)}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.tab{padding:10px 18px;font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit;transition:.15s}
+.tab.active{color:var(--gold-dark);border-bottom-color:var(--gold)}
+.inbox-msg{border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:.75rem;background:var(--surface)}
+.inbox-msg-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.inbox-msg-from{font-size:12px;color:var(--muted)}
+.inbox-msg-date{font-size:11px;color:var(--hint)}
+.inbox-msg-subject{font-weight:600;font-size:14px;margin-bottom:.5rem}
+.inbox-msg-body{font-size:13px;color:#333;line-height:1.7;white-space:pre-line}
+#toast-container{position:fixed;top:70px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1.25rem;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.15);display:flex;align-items:center;gap:10px;min-width:280px;max-width:360px;pointer-events:all;animation:slideIn .25s ease;border-left:4px solid var(--border)}
+.toast.success{border-left-color:var(--success);background:var(--success-bg);color:var(--success)}
+.toast.error{border-left-color:var(--danger);background:var(--danger-bg);color:var(--danger)}
+.toast.info{border-left-color:var(--navy-mid);background:var(--navy-light);color:var(--navy)}
+.toast.warn{border-left-color:var(--gold);background:var(--warn-bg);color:var(--warn)}
+.toast-icon{font-size:16px;flex-shrink:0}
+.toast-msg{flex:1;font-weight:500}
+.toast-close{cursor:pointer;opacity:.6;font-size:16px;padding:0 4px;background:none;border:none;color:inherit;font-family:inherit}
+.toast-close:hover{opacity:1}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner.dark{border-color:rgba(0,0,0,.15);border-top-color:var(--navy)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay{display:flex;align-items:center;justify-content:center;padding:3rem;gap:12px;color:var(--muted);font-size:14px}
+@media print{.topbar,.btn-group,.no-print,#toast-container{display:none!important}body{background:#fff}.print-slip{border:2px solid #000}}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div id="screen-login" class="login-wrap">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">CP</div>
+      <div class="login-title">CPCL Holiday Facility</div>
+      <div class="login-sub">Chennai Petroleum Corporation Limited</div>
+    </div>
+    <div id="login-error" class="login-error hidden"></div>
+    <div class="field" style="margin-bottom:.75rem">
+      <label>Employee ID <span class="req">*</span></label>
+      <input type="text" id="login-id" placeholder="e.g. EMP001" autocomplete="username"/>
+    </div>
+    <div class="field" style="margin-bottom:1.25rem">
+      <label>Password <span class="req">*</span></label>
+      <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password"/>
+    </div>
+    <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center" onclick="doLogin()">Sign In</button>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);font-size:12px;color:var(--hint)">
+      <strong style="color:var(--muted)">Demo accounts:</strong><br>
+      EMP001 / pass &rarr; Supervisor<br>EMP002 / pass &rarr; Non-Supervisor<br>ADMIN01 / admin &rarr; IT Admin<br>FIN01 / fin &rarr; Finance
+    </div>
+  </div>
+</div>
+
+<div id="screen-app" class="hidden">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">CP</div>
+      <div><div class="topbar-title">CPCL &ndash; Holiday Facility</div></div>
+    </div>
+    <div class="topbar-nav" id="main-nav"></div>
+    <div class="topbar-right">
+      <div><div class="topbar-user" id="topbar-user"></div></div>
+      <span class="topbar-badge" id="topbar-role"></span>
+      <button class="btn-signout" onclick="doSignout()">Sign Out</button>
+    </div>
+  </nav>
+  <div id="view-dashboard" class="hidden"></div>
+  <div id="view-eligible" class="hidden"></div>
+  <div id="view-book" class="hidden"></div>
+  <div id="view-mybookings" class="hidden"></div>
+  <div id="view-inbox" class="hidden"></div>
+  <div id="view-admin" class="hidden"></div>
+  <div id="view-finance" class="hidden"></div>
+</div>
+
+<div id="print-overlay" class="overlay hidden">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title">Booking Confirmation Slip</div>
+    <div id="print-content"></div>
+    <div class="btn-group no-print">
+      <button class="btn btn-navy" onclick="window.print()">&#128424; Print</button>
+      <button class="btn btn-secondary" onclick="closeModal('print-overlay')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="cancel-overlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-title">Cancel Booking</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:1rem">Are you sure? Cancellation charges may apply as per the policy.</p>
+    <div id="cancel-fee-preview" class="alert alert-warn" style="margin-bottom:1rem"></div>
+    <div class="btn-group" style="margin-top:.5rem">
+      <button class="btn btn-danger" id="confirm-cancel-btn">Yes, Cancel Booking</button>
+      <button class="btn btn-secondary" onclick="closeModal('cancel-overlay')">Keep Booking</button>
+    </div>
+  </div>
+</div>
+
+<div id="reject-overlay" class="overlay hidden">
+  <div class="modal">
+    <div class="modal-title">Reject Booking</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:.75rem">Provide a reason for rejection (optional). The employee will be notified by email.</p>
+    <div class="field">
+      <label>Reason</label>
+      <textarea id="reject-reason" placeholder="e.g. Hotel fully booked for requested dates" rows="3" style="width:100%;margin-top:.5rem"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-danger" id="confirm-reject-btn">Confirm Rejection</button>
+      <button class="btn btn-secondary" onclick="closeModal('reject-overlay')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+// Change this to your deployed backend URL before going live
+const API_BASE = "https://cpcl-holiday-facility.onrender.com/api";
+
+// ── API HELPER ────────────────────────────────────────────────
+async function api(path, options) {
+  options = options || {};
+  const token = localStorage.getItem("cpcl_token");
+  const res = await fetch(API_BASE + path, Object.assign({}, options, {
+    headers: Object.assign(
+      { "Content-Type": "application/json" },
+      token ? { "Authorization": "Bearer " + token } : {},
+      options.headers || {}
+    )
+  }));
+  var data;
+  try { data = await res.json(); } catch(e) { data = {}; }
+  if (!res.ok) throw new Error(data.error || ("Request failed (" + res.status + ")"));
+  return data;
+}
+
+// ── TOASTS ────────────────────────────────────────────────────
+function toast(msg, type, duration) {
+  type = type || "info";
+  duration = duration || 4000;
+  var icons = { success: "✓", error: "✕", info: "ℹ", warn: "⚠" };
+  var c = document.getElementById("toast-container");
+  var el = document.createElement("div");
+  el.className = "toast " + type;
+  el.innerHTML = '<span class="toast-icon">' + (icons[type]||"ℹ") + '</span><span class="toast-msg">' + msg + '</span><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
+  c.appendChild(el);
+  setTimeout(function() {
+    el.style.animation = "slideOut .25s ease forwards";
+    setTimeout(function() { el.remove(); }, 260);
+  }, duration);
+}
+
+// ── LOADING ───────────────────────────────────────────────────
+function loadingHTML(msg) {
+  msg = msg || "Loading...";
+  return '<div class="loading-overlay"><div class="spinner dark"></div><span>' + msg + '</span></div>';
+}
+function setLoading(btn, loading, label) {
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? ('<div class="spinner"></div> ' + (label||"Loading...")) : (btn.dataset.label || label || "Submit");
+}
+
+// ── STATE ─────────────────────────────────────────────────────
+var currentUser = null;
+var HOTELS = [];
+
+function show(id) { document.getElementById(id).classList.remove("hidden"); }
+function hide(id) { document.getElementById(id).classList.add("hidden"); }
+function closeModal(id) { hide(id); }
+
+function fmtDate(d) {
+  if (!d) return "—";
+  try { return new Date(d).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" }); }
+  catch(e) { return d; }
+}
+
+function hotelById(id) {
+  return HOTELS.find(function(h){ return String(h.id) === String(id); }) || null;
+}
+
+// ── AUTH ──────────────────────────────────────────────────────
+async function doLogin() {
+  var employeeId = document.getElementById("login-id").value.trim();
+  var password = document.getElementById("login-pass").value;
+  var errEl = document.getElementById("login-error");
+  var btn = document.getElementById("login-btn");
+  errEl.classList.add("hidden");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Signing in...';
+  try {
+    var res = await api("/auth/login", { method:"POST", body: JSON.stringify({ employeeId: employeeId, password: password }) });
+    localStorage.setItem("cpcl_token", res.token);
+    currentUser = res.user;
+    await loadHotels();
+    show("screen-app"); hide("screen-login");
+    buildNav();
+    if (currentUser.role === "IT Admin") showView("admin");
+    else if (currentUser.role === "Finance") showView("finance");
+    else showView("dashboard");
+    toast("Welcome back, " + currentUser.name + "!", "success");
+  } catch(err) {
+    errEl.textContent = err.message;
+    errEl.classList.remove("hidden");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "Sign In";
+  }
+}
+
+function doSignout() {
+  localStorage.removeItem("cpcl_token");
+  currentUser = null; HOTELS = [];
+  show("screen-login"); hide("screen-app");
+  document.getElementById("login-id").value = "";
+  document.getElementById("login-pass").value = "";
+  document.getElementById("login-error").classList.add("hidden");
+}
+
+async function tryRestoreSession() {
+  var token = localStorage.getItem("cpcl_token");
+  if (!token) return;
+  try {
+    var res = await api("/auth/me");
+    currentUser = res.user;
+    await loadHotels();
+    show("screen-app"); hide("screen-login");
+    buildNav();
+    if (currentUser.role === "IT Admin") showView("admin");
+    else if (currentUser.role === "Finance") showView("finance");
+    else showView("dashboard");
+  } catch(e) {
+    localStorage.removeItem("cpcl_token");
+  }
+}
+
+// ── HOTELS ────────────────────────────────────────────────────
+async function loadHotels() {
+  try {
+    var res = await api("/hotels");
+    HOTELS = (res.hotels || []).map(function(h) {
+      return Object.assign({}, h, { nodal: h.nodalOfficer || h.nodal || {} });
+    });
+  } catch(e) { HOTELS = []; }
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function buildNav() {
+  document.getElementById("topbar-user").textContent = currentUser.name + " (" + currentUser.id + ")";
+  document.getElementById("topbar-role").textContent = currentUser.role;
+  var nav = document.getElementById("main-nav");
+  nav.innerHTML = "";
+  var links = [];
+  if (currentUser.role === "Supervisor" || currentUser.role === "Non-Supervisor") {
+    links = [
+      { v:"dashboard", label:"Dashboard" },
+      { v:"eligible", label:"Eligible Hotels" },
+      { v:"book", label:"New Booking" },
+      { v:"mybookings", label:"My Bookings" },
+      { v:"inbox", label:"Inbox" }
+    ];
+  } else if (currentUser.role === "IT Admin") {
+    links = [{ v:"admin", label:"Booking Approvals" }, { v:"inbox", label:"Notifications" }];
+  } else if (currentUser.role === "Finance") {
+    links = [{ v:"finance", label:"Finance Dashboard" }, { v:"inbox", label:"Notifications" }];
+  }
+  links.forEach(function(l) {
+    var a = document.createElement("a");
+    a.textContent = l.label; a.dataset.view = l.v;
+    a.onclick = function() { showView(l.v); };
+    nav.appendChild(a);
+  });
+}
+
+function showView(v) {
+  document.querySelectorAll(".topbar-nav a").forEach(function(a) {
+    a.classList.toggle("active", a.dataset.view === v);
+  });
+  ["dashboard","eligible","book","mybookings","inbox","admin","finance"].forEach(function(id) {
+    document.getElementById("view-" + id).classList.add("hidden");
+  });
+  show("view-" + v);
+  var renders = {
+    dashboard: renderDashboard, eligible: renderEligible, book: renderBook,
+    mybookings: renderMyBookings, inbox: renderInbox, admin: renderAdmin, finance: renderFinance
+  };
+  if (renders[v]) renders[v]();
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────
+async function renderDashboard() {
+  var el = document.getElementById("view-dashboard");
+  el.innerHTML = loadingHTML("Loading dashboard...");
+  try {
+    var results = await Promise.all([ api("/bookings/my"), api("/bookings/quota/status") ]);
+    var books = results[0].bookings || [];
+    var quotaRes = results[1];
+    var quota = quotaRes.quota || {};
+    var curYear = quotaRes.currentYear || "2026-2027";
+    var usedCur = (quota[curYear] || {}).used || false;
+    var usedNext = (quota["2027-2028"] || {}).used || false;
+    var recent = books.slice(0, 3);
+    el.innerHTML = '<div class="page">' +
+      '<div class="page-header"><div class="page-title">Welcome, ' + currentUser.name + '</div>' +
+      '<div class="page-sub">' + currentUser.role + ' &middot; ' + currentUser.id + ' &middot; ' + currentUser.email + '</div></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem">' +
+      '<div class="card" style="text-align:center;padding:1.5rem 1rem"><div style="font-size:32px;font-weight:600;color:var(--navy);font-family:\'DM Serif Display\',serif">' + books.length + '</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Total Bookings</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.5rem 1rem"><div style="font-size:32px;font-weight:600;color:' + (usedCur ? "var(--danger)" : "var(--success)") + ';font-family:\'DM Serif Display\',serif">' + (usedCur ? "Used" : "Available") + '</div><div style="font-size:13px;color:var(--muted);margin-top:4px">2026&ndash;2027 Quota</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.5rem 1rem"><div style="font-size:32px;font-weight:600;color:' + (usedNext ? "var(--danger)" : "var(--success)") + ';font-family:\'DM Serif Display\',serif">' + (usedNext ? "Used" : "Available") + '</div><div style="font-size:13px;color:var(--muted);margin-top:4px">2027&ndash;2028 Quota</div></div>' +
+      '</div>' +
+      (usedCur ? '<div class="alert alert-warn"><strong>Notice:</strong> You have already used your Holiday Facility booking for <strong>' + curYear + '</strong>. Next eligible year is 2027-2028.</div>'
+               : '<div class="alert alert-info"><strong>Holiday Facility is available!</strong> You are eligible for <strong>' + curYear + '</strong>. <a onclick="showView(\'book\')" style="color:var(--navy);font-weight:600;cursor:pointer">Book now &rarr;</a></div>') +
+      (recent.length > 0 ? '<div class="card"><div class="card-title">Recent Bookings</div><div class="table-wrap"><table><thead><tr><th>Booking ID</th><th>Hotel</th><th>Check-In</th><th>Nights</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+        recent.map(function(b) {
+          return '<tr><td style="font-weight:500;color:var(--navy)">' + b.id + '</td>' +
+            '<td>' + (b.hotel_name || (hotelById(b.hotel_id)||{}).name || b.hotel_id) + '</td>' +
+            '<td>' + fmtDate(b.check_in) + '</td><td>' + b.nights + '</td>' +
+            '<td><span class="badge badge-' + b.status.toLowerCase() + '">' + b.status + '</span></td>' +
+            '<td>' + (b.status === "Approved" ? '<button class="btn btn-navy btn-sm" onclick="openPrint(\'' + b.id + '\')">Print</button>' : "") + '</td></tr>';
+        }).join("") +
+        '</tbody></table></div></div>' : "") +
+      '</div>';
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Failed to load dashboard: ' + err.message + '</div></div>';
+  }
+}
+
+// ── ELIGIBLE HOTELS ──────────────────────────────────────────
+async function renderEligible() {
+  var el = document.getElementById("view-eligible");
+  if (HOTELS.length === 0) { el.innerHTML = loadingHTML("Loading hotels..."); await loadHotels(); }
+  var html = '<div class="page"><div class="page-header"><div class="page-title">Eligible Hotels</div><div class="page-sub">Holiday Home hotels available, along with package details and nodal officer contacts.</div></div>';
+  if (HOTELS.length === 0) {
+    html += '<div class="alert alert-warn">No eligible hotels found. Please contact HR.</div>';
+  } else {
+    HOTELS.forEach(function(h) {
+      var nodal = h.nodal || {};
+      html += '<div class="hotel-card">' +
+        '<div class="hotel-header"><div>' +
+        '<div class="hotel-name">' + h.name + '</div>' +
+        '<div class="hotel-addr">&#128205; ' + h.address + '</div>' +
+        '<div class="hotel-contacts">' +
+        '<span class="hotel-contact-btn">&#128222; ' + (h.phone||"—") + '</span>' +
+        '<span class="hotel-contact-btn">&#9993; ' + (h.email||"—") + '</span>' +
+        (h.website ? '<a href="' + h.website + '" class="hotel-contact-btn" target="_blank">&#127760; Website</a>' : '') +
+        '</div></div></div>' +
+        '<div class="hotel-body">' +
+        '<div class="hotel-distances">' +
+        '<div class="hotel-dist-box"><div class="hotel-dist-label">&#9992; Nearest Airports</div>' +
+        ((h.airports||[]).map(function(a){ return '<div class="hotel-dist-item"><span>' + a.name + '</span><span class="hotel-dist-km">' + a.km + ' km</span></div>'; }).join("") || "<div style='color:var(--hint);font-size:12px'>—</div>") + '</div>' +
+        '<div class="hotel-dist-box"><div class="hotel-dist-label">&#128652; Bus Stands</div>' +
+        ((h.busStands||[]).map(function(a){ return '<div class="hotel-dist-item"><span>' + a.name + '</span><span class="hotel-dist-km">' + a.km + ' km</span></div>'; }).join("") || "<div style='color:var(--hint);font-size:12px'>—</div>") + '</div>' +
+        '<div class="hotel-dist-box"><div class="hotel-dist-label">&#128642; Railway Stations</div>' +
+        ((h.railwayStations||[]).map(function(a){ return '<div class="hotel-dist-item"><span>' + a.name + '</span><span class="hotel-dist-km">' + a.km + ' km</span></div>'; }).join("") || "<div style='color:var(--hint);font-size:12px'>—</div>") + '</div>' +
+        '</div>' +
+        '<div style="background:var(--gold-light);border-radius:var(--radius);padding:1rem 1.25rem">' +
+        ((h.packageDetails||[]).length ? '<div class="pkg-section"><div class="pkg-label">Package Details</div><ul class="pkg-list">' + h.packageDetails.map(function(i){ return '<li>' + i + '</li>'; }).join("") + '</ul></div>' : '') +
+        ((h.complimentaryServices||[]).length ? '<div class="pkg-section"><div class="pkg-label">Complimentary Services</div><ul class="pkg-list">' + h.complimentaryServices.map(function(i){ return '<li>' + i + '</li>'; }).join("") + '</ul></div>' : '') +
+        ((h.diningConcessions||[]).length ? '<div class="pkg-section"><div class="pkg-label">Dining Concessions</div><ul class="pkg-list">' + h.diningConcessions.map(function(i){ return '<li>' + i + '</li>'; }).join("") + '</ul></div>' : '') +
+        '</div>' +
+        (nodal.name ? '<div class="nodal-row"><div class="nodal-avatar">' + (nodal.name||"?").split(" ").map(function(w){return w[0];}).join("").slice(0,2) + '</div><div><div style="font-weight:600;font-size:13px">Nodal Officer: ' + nodal.name + '</div><div style="font-size:12px;color:var(--muted)">&#128222; ' + (nodal.phone||"—") + ' &nbsp;&middot;&nbsp; &#9993; ' + (nodal.email||"—") + '</div></div></div>' : '') +
+        '</div></div>';
+    });
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── BOOKING FORM ─────────────────────────────────────────────
+async function renderBook() {
+  var el = document.getElementById("view-book");
+  el.innerHTML = loadingHTML("Checking eligibility...");
+  try {
+    var quotaRes = await api("/bookings/quota/status");
+    var curYear = quotaRes.currentYear;
+    var quota = quotaRes.quota || {};
+    if ((quota[curYear]||{}).used) {
+      el.innerHTML = '<div class="page"><div class="page-header"><div class="page-title">New Booking</div></div>' +
+        '<div class="alert alert-danger"><strong>Booking Not Available</strong><br>You have already availed the Holiday Facility for <strong>' + curYear + '</strong>. Only one booking is allowed per financial year.</div>' +
+        '<button class="btn btn-secondary" onclick="showView(\'mybookings\')">&#8592; View My Bookings</button></div>';
+      return;
+    }
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Could not verify eligibility: ' + err.message + '</div></div>';
+    return;
+  }
+  var todayStr = new Date().toISOString().split("T")[0];
+  var hotelOpts = HOTELS.map(function(h){ return '<option value="' + h.id + '">' + h.name + '</option>'; }).join("");
+  el.innerHTML = '<div class="page">' +
+    '<div class="page-header"><div class="page-title">New Booking</div><div class="page-sub">Fill in the details. Ensure you have called the hotel and received a confirmation reference number.</div></div>' +
+    '<div class="alert alert-info"><strong>Note:</strong> Call the hotel first and obtain a <strong>Hotel Confirmation / Reference Number</strong> before submitting.</div>' +
+    '<div class="card"><div class="card-title">Hotel Selection</div>' +
+    '<div class="form-row">' +
+    '<div class="field"><label>Hotel <span class="req">*</span></label><select id="f-hotel" onchange="updateHotelInfo()"><option value="">— Select Hotel —</option>' + hotelOpts + '</select></div>' +
+    '<div class="field"><label>Hotel Confirmation / Reference No. <span class="req">*</span></label><input type="text" id="f-ref" placeholder="Reference number provided by the hotel"/><span class="hint">Enter this within 72 hours of the hotel booking.</span></div>' +
+    '</div><div id="hotel-info-preview" class="hidden" style="background:var(--navy-light);border-radius:var(--radius);padding:.75rem 1rem;font-size:13px;color:var(--navy)"></div></div>' +
+    '<div class="card"><div class="card-title">Stay Dates <span style="font-size:11px;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:4px;text-transform:none;letter-spacing:0;font-weight:500">Maximum 3 Nights Allowed</span></div>' +
+    '<div class="form-row">' +
+    '<div class="field"><label>Check-In Date <span class="req">*</span></label><input type="date" id="f-checkin" onchange="updateNights()" min="' + todayStr + '"/><span class="hint">Today or a future date.</span></div>' +
+    '<div class="field"><label>Check-Out Date <span class="req">*</span></label><div class="radio-group" id="checkout-options"><span style="font-size:13px;color:var(--hint)">Select a check-in date first</span></div></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="card-title">Occupancy Details</div><div class="form-row three">' +
+    '<div class="field"><label>No. of Adults <span class="req">*</span></label><select id="f-adults"><option value="">— Select —</option>' + [1,2,3,4,5].map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join("") + '</select><span class="hint">Max 5</span></div>' +
+    '<div class="field"><label>No. of Children</label><select id="f-children">' + [0,1,2,3,4].map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join("") + '</select><span class="hint">Max 4</span></div>' +
+    '<div class="field"><label>No. of Rooms <span class="req">*</span></label><select id="f-rooms"><option value="">— Select —</option><option value="1">1</option><option value="2">2</option></select><span class="hint">Max 2</span></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="card-title">Additional Info</div><div class="form-row full"><div class="field"><label>Purpose of Stay / Remarks</label><textarea id="f-purpose" placeholder="Optional: describe purpose, request extra bed, etc."></textarea></div></div></div>' +
+    '<div class="card"><div class="card-title">&#9888; Cancellation Terms &amp; Conditions</div>' +
+    '<div class="alert alert-warn" style="font-size:13px;line-height:1.8">By submitting this request, you agree to the following cancellation policy:<br><br>' +
+    '&bull; More than 28 days before check-in &mdash; No cancellation fee.<br>' +
+    '&bull; 21&ndash;28 days before &mdash; &#8377;100 per room per night.<br>' +
+    '&bull; 14&ndash;20 days before &mdash; &#8377;200 per room per night.<br>' +
+    '&bull; 7&ndash;13 days before &mdash; &#8377;300 per room per night.<br>' +
+    '&bull; Less than 7 days &mdash; <strong>Full recovery of booking amount.</strong><br><br>' +
+    '<strong>No charges</strong> apply in case of CPRC rejection, hotel non-confirmation, or hotel-side cancellation/failure.</div>' +
+    '<div class="btn-group"><button class="btn btn-primary" id="submit-booking-btn" data-label="&#10003; Submit Request" onclick="submitBooking()">&#10003; Submit Request</button>' +
+    '<button class="btn btn-secondary" onclick="showView(\'dashboard\')">Cancel</button></div></div></div>';
+}
+
+function updateHotelInfo() {
+  var id = document.getElementById("f-hotel").value;
+  var h = hotelById(id);
+  var el = document.getElementById("hotel-info-preview");
+  if (!h) { el.classList.add("hidden"); return; }
+  var nodal = h.nodal || {};
+  el.innerHTML = "<strong>" + h.name + "</strong> &nbsp;|&nbsp; &#128222; " + (h.phone||"—") + " &nbsp;|&nbsp; Nodal: " + (nodal.name||"—") + " (" + (nodal.phone||"—") + ")";
+  el.classList.remove("hidden");
+}
+
+function updateNights() {
+  var ci = document.getElementById("f-checkin").value;
+  var el = document.getElementById("checkout-options");
+  if (!ci) { el.innerHTML = '<span style="font-size:13px;color:var(--hint)">Select a check-in date first</span>'; return; }
+  var base = new Date(ci);
+  var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  el.innerHTML = [1,2,3].map(function(n) {
+    var d = new Date(base); d.setDate(d.getDate() + n);
+    var label = d.toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" });
+    return '<input type="radio" class="radio-night" name="nights" id="n'+n+'" value="'+n+'"><label for="n'+n+'">'+n+' Night'+(n>1?'s':'')+' &mdash; '+label+' ('+days[d.getDay()]+')</label>';
+  }).join("");
+}
+
+async function submitBooking() {
+  var hotelId = document.getElementById("f-hotel").value;
+  var hotelRef = document.getElementById("f-ref").value.trim();
+  var checkIn = document.getElementById("f-checkin").value;
+  var nightsEl = document.querySelector("input[name='nights']:checked");
+  var numAdults = document.getElementById("f-adults").value;
+  var numRooms = document.getElementById("f-rooms").value;
+  var numChildren = document.getElementById("f-children").value;
+  var purpose = document.getElementById("f-purpose").value;
+  if (!hotelId || !hotelRef || !checkIn || !nightsEl || !numAdults || !numRooms) {
+    toast("Please fill in all required fields.", "warn"); return;
+  }
+  var btn = document.getElementById("submit-booking-btn");
+  setLoading(btn, true, "Submitting...");
+  try {
+    var res = await api("/bookings", {
+      method: "POST",
+      body: JSON.stringify({ hotelId: parseInt(hotelId), hotelRef: hotelRef, checkIn: checkIn,
+        nights: parseInt(nightsEl.value), numAdults: parseInt(numAdults),
+        numChildren: parseInt(numChildren), numRooms: parseInt(numRooms), purpose: purpose })
+    });
+    toast("Booking submitted! ID: " + res.booking.id + ". Confirmation email sent.", "success", 6000);
+    showView("mybookings");
+  } catch(err) {
+    toast(err.message, "error", 6000);
+    setLoading(btn, false, "&#10003; Submit Request");
+  }
+}
+
+// ── MY BOOKINGS ───────────────────────────────────────────────
+async function renderMyBookings() {
+  var el = document.getElementById("view-mybookings");
+  el.innerHTML = loadingHTML("Loading your bookings...");
+  try {
+    var res = await api("/bookings/my");
+    var bookings = res.bookings || [];
+    var html = '<div class="page"><div class="page-header"><div class="page-title">My Bookings</div><div class="page-sub">All your Holiday Home booking requests and their statuses.</div></div>';
+    if (bookings.length === 0) {
+      html += '<div class="card" style="text-align:center;padding:3rem"><div style="font-size:40px;margin-bottom:.5rem">&#127968;</div><div style="color:var(--muted)">No bookings yet. <a onclick="showView(\'book\')" style="color:var(--navy);cursor:pointer;font-weight:500">Make your first booking &rarr;</a></div></div>';
+    } else {
+      html += '<div class="card"><div class="table-wrap"><table><thead><tr><th>Booking ID</th><th>Hotel</th><th>Check-In</th><th>Check-Out</th><th>Rooms</th><th>Year</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+      bookings.forEach(function(b) {
+        html += '<tr>' +
+          '<td style="font-weight:600;color:var(--navy);font-size:13px">' + b.id + '</td>' +
+          '<td style="font-size:13px">' + (b.hotel_name || (hotelById(b.hotel_id)||{}).name || b.hotel_id) + '</td>' +
+          '<td>' + fmtDate(b.check_in) + '</td>' +
+          '<td>' + fmtDate(b.check_out) + '</td>' +
+          '<td>' + b.num_rooms + '</td>' +
+          '<td><span style="font-size:12px;color:var(--muted)">' + b.financial_year + '</span></td>' +
+          '<td><span class="badge badge-' + b.status.toLowerCase() + '">' + b.status + '</span></td>' +
+          '<td style="display:flex;gap:6px;flex-wrap:wrap">' +
+          (b.status === "Approved" ? '<button class="btn btn-navy btn-sm" onclick="openPrint(\'' + b.id + '\')">Print</button>' : '') +
+          (["Pending","Approved"].includes(b.status) ? '<button class="btn btn-secondary btn-sm" onclick="openCancel(\'' + b.id + '\')">Cancel</button>' : '') +
+          '</td></tr>';
+      });
+      html += '</tbody></table></div></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Failed to load bookings: ' + err.message + '</div></div>';
+  }
+}
+
+// ── CANCELLATION ──────────────────────────────────────────────
+async function openCancel(bookingId) {
+  var feeEl = document.getElementById("cancel-fee-preview");
+  feeEl.innerHTML = '<div class="loading-overlay" style="padding:.5rem"><div class="spinner dark"></div> Calculating fee...</div>';
+  show("cancel-overlay");
+  try {
+    var res = await api("/bookings/" + bookingId + "/cancellation-preview");
+    feeEl.innerHTML = "<strong>Cancellation fee estimate:</strong><br>" + (res.preview||{}).description;
+  } catch(e) { feeEl.innerHTML = "Could not calculate fee. Proceed with caution."; }
+  document.getElementById("confirm-cancel-btn").onclick = function() { doCancel(bookingId); };
+}
+
+async function doCancel(bookingId) {
+  var btn = document.getElementById("confirm-cancel-btn");
+  setLoading(btn, true, "Cancelling...");
+  try {
+    var res = await api("/bookings/" + bookingId + "/cancel", { method:"PATCH", body: JSON.stringify({}) });
+    closeModal("cancel-overlay");
+    toast("Booking cancelled. " + (res.feeDescription||""), "info", 6000);
+    renderMyBookings();
+  } catch(err) {
+    toast(err.message, "error");
+    setLoading(btn, false, "Yes, Cancel Booking");
+  }
+}
+
+// ── INBOX ─────────────────────────────────────────────────────
+async function renderInbox() {
+  var el = document.getElementById("view-inbox");
+  el.innerHTML = loadingHTML("Loading inbox...");
+  try {
+    var res = await api("/inbox");
+    var emails = res.emails || [];
+    var html = '<div class="page"><div class="page-header"><div class="page-title">Inbox</div><div class="page-sub">Email notifications sent to ' + currentUser.email + '</div></div>';
+    if (emails.length === 0) {
+      html += '<div class="card" style="text-align:center;padding:3rem;color:var(--muted)">&#128333; No messages yet.</div>';
+    } else {
+      emails.forEach(function(m) {
+        html += '<div class="inbox-msg">' +
+          '<div class="inbox-msg-header"><div class="inbox-msg-from">To: ' + (m.recipient||m.to||"") + '</div>' +
+          '<div class="inbox-msg-date">' + (m.sent_at ? new Date(m.sent_at).toLocaleString("en-IN") : m.date||"") + '</div></div>' +
+          '<div class="inbox-msg-subject">' + m.subject + '</div>' +
+          '<div class="inbox-msg-body">' + (m.body||"").replace(/</g,"&lt;").replace(/\n/g,"<br>") + '</div></div>';
+      });
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Failed to load inbox: ' + err.message + '</div></div>';
+  }
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────
+async function renderAdmin() {
+  var el = document.getElementById("view-admin");
+  el.innerHTML = loadingHTML("Loading approval queue...");
+  try {
+    var results = await Promise.all([ api("/admin/bookings/pending"), api("/admin/bookings") ]);
+    var pending = results[0].bookings || [];
+    var all = results[1].bookings || [];
+    var approved = all.filter(function(b){ return b.status==="Approved"; }).length;
+    var rejected = all.filter(function(b){ return b.status==="Rejected"; }).length;
+    var html = '<div class="page">' +
+      '<div class="page-header"><div class="page-title">Booking Approvals</div><div class="page-sub">IT Admin Portal &ndash; Review and approve or reject Holiday Home requests.</div></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem">' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--warn);font-family:\'DM Serif Display\',serif">' + pending.length + '</div><div style="font-size:13px;color:var(--muted)">Pending Approval</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--success);font-family:\'DM Serif Display\',serif">' + approved + '</div><div style="font-size:13px;color:var(--muted)">Approved</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--danger);font-family:\'DM Serif Display\',serif">' + rejected + '</div><div style="font-size:13px;color:var(--muted)">Rejected</div></div>' +
+      '</div>' +
+      '<div class="tabs">' +
+      '<button class="tab active" id="tab-pending-btn" onclick="adminTab(\'pending\')">Pending (' + pending.length + ')</button>' +
+      '<button class="tab" id="tab-all-btn" onclick="adminTab(\'all\')">All Bookings (' + all.length + ')</button>' +
+      '</div>' +
+      '<div id="admin-pending-view">';
+    if (pending.length === 0) {
+      html += '<div class="card" style="text-align:center;padding:2rem;color:var(--muted)">&#10003; No pending requests</div>';
+    } else {
+      pending.forEach(function(b) {
+        html += '<div class="card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem">' +
+          '<div><div style="font-weight:600;font-size:16px;color:var(--navy)">' + b.id + '</div>' +
+          '<div style="font-size:13px;color:var(--muted);margin:.25rem 0">' + b.employee_name + ' (' + b.employee_id + ') &ndash; ' + b.financial_year + '</div></div>' +
+          '<span class="badge badge-pending">Pending</span></div>' +
+          '<div class="divider" style="margin:.75rem 0"></div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;font-size:13px;margin-bottom:.75rem">' +
+          '<div><span style="color:var(--muted)">Hotel</span><br><strong>' + b.hotel_name + '</strong></div>' +
+          '<div><span style="color:var(--muted)">Dates</span><br><strong>' + fmtDate(b.check_in) + ' &rarr; ' + fmtDate(b.check_out) + '</strong></div>' +
+          '<div><span style="color:var(--muted)">Rooms / Adults</span><br><strong>' + b.num_rooms + ' rooms, ' + b.num_adults + ' adults</strong></div>' +
+          '</div>' +
+          '<div style="font-size:13px;color:var(--muted);margin-bottom:.75rem">Hotel Ref: <strong>' + b.hotel_ref + '</strong></div>' +
+          (b.purpose ? '<div style="font-size:13px;color:var(--muted);margin-bottom:.75rem">Remarks: ' + b.purpose + '</div>' : '') +
+          '<div style="display:flex;gap:.75rem">' +
+          '<button class="btn btn-primary btn-sm" id="approve-btn-' + b.id + '" onclick="adminApprove(\'' + b.id + '\')">&#10003; Approve</button>' +
+          '<button class="btn btn-danger btn-sm" onclick="openReject(\'' + b.id + '\')">&#10005; Reject</button>' +
+          '</div></div>';
+      });
+    }
+    html += '</div><div id="admin-all-view" class="hidden"><div class="card"><div class="table-wrap"><table>' +
+      '<thead><tr><th>ID</th><th>Employee</th><th>Hotel</th><th>Check-In</th><th>Nights</th><th>Rooms</th><th>Status</th></tr></thead><tbody>';
+    all.forEach(function(b) {
+      html += '<tr>' +
+        '<td style="font-weight:500;color:var(--navy);font-size:12px">' + b.id + '</td>' +
+        '<td style="font-size:13px">' + b.employee_name + '<br><span style="color:var(--muted);font-size:11px">' + b.employee_id + '</span></td>' +
+        '<td style="font-size:13px">' + b.hotel_name + '</td>' +
+        '<td>' + fmtDate(b.check_in) + '</td>' +
+        '<td>' + b.nights + '</td>' +
+        '<td>' + b.num_rooms + '</td>' +
+        '<td><span class="badge badge-' + b.status.toLowerCase() + '">' + b.status + '</span></td></tr>';
+    });
+    html += '</tbody></table></div></div></div></div>';
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Failed to load admin panel: ' + err.message + '</div></div>';
+  }
+}
+
+function adminTab(t) {
+  document.getElementById("tab-pending-btn").classList.toggle("active", t==="pending");
+  document.getElementById("tab-all-btn").classList.toggle("active", t==="all");
+  document.getElementById("admin-pending-view").classList.toggle("hidden", t!=="pending");
+  document.getElementById("admin-all-view").classList.toggle("hidden", t!=="all");
+}
+
+async function adminApprove(bookingId) {
+  var btn = document.getElementById("approve-btn-" + bookingId);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+  try {
+    await api("/admin/bookings/" + bookingId + "/approve", { method:"PATCH" });
+    toast("Booking " + bookingId + " approved. Employee notified.", "success");
+    renderAdmin();
+  } catch(err) {
+    toast(err.message, "error");
+    if (btn) { btn.disabled = false; btn.innerHTML = "&#10003; Approve"; }
+  }
+}
+
+function openReject(bookingId) {
+  document.getElementById("reject-reason").value = "";
+  document.getElementById("confirm-reject-btn").onclick = function() { adminReject(bookingId); };
+  show("reject-overlay");
+}
+
+async function adminReject(bookingId) {
+  var reason = document.getElementById("reject-reason").value.trim();
+  var btn = document.getElementById("confirm-reject-btn");
+  setLoading(btn, true, "Rejecting...");
+  try {
+    await api("/admin/bookings/" + bookingId + "/reject", { method:"PATCH", body: JSON.stringify({ reason: reason }) });
+    closeModal("reject-overlay");
+    toast("Booking " + bookingId + " rejected. Employee notified. Quota restored.", "info");
+    renderAdmin();
+  } catch(err) {
+    toast(err.message, "error");
+    setLoading(btn, false, "Confirm Rejection");
+  }
+}
+
+// ── FINANCE ───────────────────────────────────────────────────
+async function renderFinance() {
+  var el = document.getElementById("view-finance");
+  el.innerHTML = loadingHTML("Loading finance data...");
+  try {
+    var results = await Promise.all([ api("/finance/cancellations"), api("/finance/reports") ]);
+    var cancellations = results[0].cancellations || [];
+    var report = results[1] || {};
+    var breakdown = report.statusBreakdown || {};
+    var feeRec = report.feeRecovery || {};
+    var html = '<div class="page">' +
+      '<div class="page-header"><div class="page-title">Finance Dashboard</div><div class="page-sub">Holiday Home booking statistics and cancellation fee notifications.</div></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem">' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--navy);font-family:\'DM Serif Display\',serif">' + (report.totalBookings||0) + '</div><div style="font-size:13px;color:var(--muted)">Total Bookings</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--success);font-family:\'DM Serif Display\',serif">' + (breakdown.Approved||0) + '</div><div style="font-size:13px;color:var(--muted)">Approved</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--danger);font-family:\'DM Serif Display\',serif">' + (feeRec.feeChargedCancellations||0) + '</div><div style="font-size:13px;color:var(--muted)">Cancellations (w/ fee)</div></div>' +
+      '<div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:28px;font-weight:600;color:var(--gold-dark);font-family:\'DM Serif Display\',serif">&#8377;' + parseFloat(feeRec.totalFeesCollectible||0).toLocaleString("en-IN") + '</div><div style="font-size:13px;color:var(--muted)">Total Fees Collectible</div></div>' +
+      '</div>';
+    if ((report.byFinancialYear||[]).length) {
+      html += '<div class="card"><div class="card-title">Financial Year Breakdown</div><div class="table-wrap"><table>' +
+        '<thead><tr><th>Financial Year</th><th>Total</th><th>Approved</th><th>Rejected</th><th>Cancelled</th><th>Pending</th></tr></thead><tbody>';
+      report.byFinancialYear.forEach(function(r) {
+        html += '<tr><td style="font-weight:500">' + r.financial_year + '</td><td>' + r.total_bookings + '</td>' +
+          '<td style="color:var(--success)">' + r.approved + '</td><td style="color:var(--danger)">' + r.rejected + '</td>' +
+          '<td style="color:var(--muted)">' + r.cancelled + '</td><td style="color:var(--warn)">' + r.pending + '</td></tr>';
+      });
+      html += '</tbody></table></div></div>';
+    }
+    if (cancellations.length > 0) {
+      html += '<div class="card"><div class="card-title">Cancellation Fee Notices</div><div class="table-wrap"><table>' +
+        '<thead><tr><th>Booking ID</th><th>Employee</th><th>Hotel</th><th>Check-In</th><th>Cancelled On</th><th>Fee Amount</th></tr></thead><tbody>';
+      cancellations.forEach(function(b) {
+        html += '<tr>' +
+          '<td style="font-weight:500;color:var(--navy);font-size:13px">' + b.id + '</td>' +
+          '<td style="font-size:13px">' + b.employee_name + ' <span style="color:var(--muted)">(' + b.employee_id + ')</span><br><span style="font-size:11px;color:var(--hint)">' + (b.department||"") + '</span></td>' +
+          '<td style="font-size:13px">' + b.hotel_name + '</td>' +
+          '<td>' + fmtDate(b.check_in) + '</td>' +
+          '<td>' + (b.cancelled_at ? new Date(b.cancelled_at).toLocaleDateString("en-IN") : "—") + '</td>' +
+          '<td style="font-weight:600;color:var(--danger)">&#8377;' + parseFloat(b.cancellation_fee_amount||0).toLocaleString("en-IN") + '</td></tr>';
+      });
+      html += '</tbody></table></div></div>';
+    } else {
+      html += '<div class="card" style="text-align:center;padding:2rem;color:var(--muted)">No cancellation fees recorded yet.</div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(err) {
+    el.innerHTML = '<div class="page"><div class="alert alert-danger">Failed to load finance data: ' + err.message + '</div></div>';
+  }
+}
+
+// ── PRINT SLIP ────────────────────────────────────────────────
+async function openPrint(bookingId) {
+  show("print-overlay");
+  document.getElementById("print-content").innerHTML = loadingHTML("Loading booking details...");
+  try {
+    var res = await api("/bookings/" + bookingId);
+    var b = res.booking;
+    var h = hotelById(b.hotel_id) || {};
+    var nodal = h.nodal || {};
+    document.getElementById("print-content").innerHTML =
+      '<div class="print-slip">' +
+      '<div class="print-header">' +
+      '<div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--navy)">CPCL Holiday Facility</div>' +
+      '<div style="font-size:13px;color:var(--muted)">Chennai Petroleum Corporation Limited</div>' +
+      '<div style="margin-top:.5rem"><span class="badge badge-approved">APPROVED</span></div>' +
+      '</div>' +
+      '<div class="print-row"><span class="print-label">Booking ID</span><span class="print-val">' + b.id + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Employee</span><span class="print-val">' + (b.employee_name||currentUser.name) + ' (' + (b.employee_id||currentUser.id) + ')</span></div>' +
+      '<div class="print-row"><span class="print-label">Hotel</span><span class="print-val">' + (b.hotel_name||h.name||"—") + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Address</span><span class="print-val" style="font-size:13px">' + (b.hotel_address||h.address||"—") + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Hotel Reference</span><span class="print-val">' + b.hotel_ref + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Check-In</span><span class="print-val">' + fmtDate(b.check_in) + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Check-Out</span><span class="print-val">' + fmtDate(b.check_out) + ' (' + b.nights + ' night' + (b.nights>1?'s':'') + ')</span></div>' +
+      '<div class="print-row"><span class="print-label">Rooms / Adults / Children</span><span class="print-val">' + b.num_rooms + ' / ' + b.num_adults + ' / ' + b.num_children + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Financial Year</span><span class="print-val">' + b.financial_year + '</span></div>' +
+      '<div class="print-row"><span class="print-label">Submitted On</span><span class="print-val">' + (b.submitted_at ? new Date(b.submitted_at).toLocaleString("en-IN") : "—") + '</span></div>' +
+      (b.purpose ? '<div class="print-row"><span class="print-label">Remarks</span><span class="print-val">' + b.purpose + '</span></div>' : '') +
+      '<div style="margin-top:2rem;font-size:12px;color:var(--muted);text-align:center">This is a computer-generated document. Please present this at hotel check-in.<br>Nodal Officer: ' + (nodal.name||"—") + ' | ' + (nodal.phone||"—") + '</div>' +
+      '</div>';
+  } catch(err) {
+    document.getElementById("print-content").innerHTML = '<div class="alert alert-danger">Could not load booking details: ' + err.message + '</div>';
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("login-pass").addEventListener("keydown", function(e){ if(e.key==="Enter") doLogin(); });
+  document.getElementById("login-id").addEventListener("keydown", function(e){ if(e.key==="Enter") document.getElementById("login-pass").focus(); });
+  tryRestoreSession();
+});
+</script>
+</body>
+</html>
